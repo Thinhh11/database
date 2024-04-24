@@ -14,12 +14,15 @@ CREATE TABLE users(
     facebook_account_id INT DEFAULT 0,
     google_account_id INT DEFAULT 0
 );
+ALTER TABLE users ADD COLUMN role_id INT;
 
 CREATE TABLE roles(
     id INT PRIMARY KEY,
     name VARCHAR(20) NOT NULL
 );
-b b
+
+ALTER TABLE users ADD FOREIGN KEY(role_id) REFERENCES roles (id);
+
 CREATE TABLE tokens(
     id int PRIMARY KEY AUTO_INCREMENT,
     token VARCHAR(255) UNIQUE NOT NULL,
@@ -37,7 +40,7 @@ CREATE TABLE social_accounts(
     provider VARCHAR(20) NOT NULL COMMENT'Tên nhà social network',
     provide_id VARCHAR(50) NOT NULL,
     email VARCHAR(150) NOT NULL COMMENT'Email tài khoản',
-    name VARCHAR(100) NOT NULL COMMENT ' Tên người  mua ',
+    name VARCHAR(100) NOT NULL COMMENT ' Tên người dùng',
     user_id int,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -59,3 +62,32 @@ CREATE TABLE products(
     category_id INT,
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
+
+--Đặt hàng-orders
+CREATE TABLE orders(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id int,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    fullname VARCHAR(100) DEFAULT '',
+    email VARCHAR(100 )DEFAULT '' ,
+    phone_number VARCHAR(20) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    note VARCHAR(100) DEFAULT '',
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20),
+    total_money FLOAT CHECK(total_money >=0)
+);
+ALTER TABLE orders ADD COLUMN  shipping_method VARCHAR(100);
+ALTER TABLE orders ADD COLUMN  shipping_address VARCHAR(200);
+ALTER TABLE orders ADD COLUMN  shipping_date DATE;
+ALTER TABLE orders ADD COLUMN tracking_number VARCHAR(100);
+ALTER TABLE orders ADD COLUMN  payment_method VARCHAR(100);
+-- xoá 1 đơn hàng => xoá mềm => thềm trước active
+ALTER TABLE orders ADD COLUMN active TINYINT(1);
+-- Trạng thái đơn hàng chỉ được phép nhận "một số giá trị cụ thể"
+ALTER TABLE orders
+MODIFY COLUMN status ENUM('pending','processing','shipped','delivered','cancelled')
+COMMENT 'Trạng thái đơn hàng';
+
+CREATE TABLE order_details()
+    id INT PRIMARY KEY AUTO_INCREMENT,
