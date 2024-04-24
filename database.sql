@@ -37,7 +37,7 @@ CREATE TABLE social_accounts(
     provider VARCHAR(20) NOT NULL COMMENT'Tên nhà social network',
     provide_id VARCHAR(50) NOT NULL,
     email VARCHAR(150) NOT NULL COMMENT'Email tài khoản',
-    name VARCHAR(100) NOT NULL COMMENT ' Tên người dùng',
+    name VARCHAR(100) NOT NULL COMMENT ' Tên người  mua ',
     user_id int,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
